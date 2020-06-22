@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="沈瑀昊的博客">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Confluence Server 数据库迁移 from H2 to MySQL - ericsyh 的博客 | ericsyh&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Eric Shen</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作步骤"><span class="toc-text">操作步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#备份-confluence"><span class="toc-text">备份 confluence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-MySQL"><span class="toc-text">安装 MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Host-部署-MySQL"><span class="toc-text">Host 部署 MySQL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-部署-MySQL"><span class="toc-text">Docker 部署 MySQL</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#部署新的-confluence"><span class="toc-text">部署新的 confluence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据迁移"><span class="toc-text">数据迁移</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Confluence Server 数据库迁移 from H2 to MySQL
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2020-06-22 14:31:11</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Confluence" title="Confluence">Confluence</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>之前按照 <a href="https://www.jianshu.com/p/8e81caca5f2a" target="_blank" rel="noopener">Docker安装Confluence</a> 部署了 confluence server。前期为了方便直接使用了 confluence 内嵌的 H2 数据库。后续小伙伴陆陆续续开始使用起来后，为了稳定还是按照官方要求使用外部数据库，并将现有的数据进行迁移。</p>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="备份-confluence"><a href="#备份-confluence" class="headerlink" title="备份 confluence"></a>备份 confluence</h3><ol>
+<li>使用管理员账号进入 <strong>站点管理</strong> -&gt; <strong>一般配置</strong> -&gt; <strong>备份与还原</strong>，对当前 confluence 进行备份操作</li>
+</ol>
+<div align="center">    
+    <img src="https://user-gold-cdn.xitu.io/2020/6/18/172c6bd9e19dc5ad?f=png&s=63731" width="648" height="286" />
+</div>
+
+<p>备份完成后，会在容器 <code>/var/atlassian/confluence/backups/</code> 目录下生成相应的备份文件</p>
+<ol start="2">
+<li>执行 <code>docker cp 8172e44b0b61:/var/atlassian/confluence/backups/xmlexport-20200619-051237-3.zip /home/confluence</code> 命令将站点备份文件从容器中拷贝至主机目录下</li>
+</ol>
+<h3 id="安装-MySQL"><a href="#安装-MySQL" class="headerlink" title="安装 MySQL"></a>安装 MySQL</h3><p>亲测 MySQL 8.0 不支持，最后选用 MySQL 5.7，提供两种方式进行部署</p>
+<h4 id="Host-部署-MySQL"><a href="#Host-部署-MySQL" class="headerlink" title="Host 部署 MySQL"></a>Host 部署 MySQL</h4><ol>
+<li><p>直接 apt 安装 MySQL <code>sudo apt-get install mysql-server</code></p>
+</li>
+<li><p>进行 MySQL 的初始化 <code>sudo mysql_secure_installation</code></p>
+</li>
+<li><p>进入 MySQL 终端，创建 confluence 库和用户并且授权</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> confluence <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_bin;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">'confluence'</span>@<span class="string">'%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'&lt;password&gt;'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> confluence.* <span class="keyword">TO</span> <span class="string">'confluence'</span>@<span class="string">'%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'&lt;password&gt;'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; flush <span class="keyword">privileges</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改 MySQL 配置文件 </p>
+</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">bind-address = 0.0.0.0 <span class="comment">#127.0.0.1</span></span><br><span class="line">character-<span class="keyword">set</span>-<span class="keyword">server</span> = utf8mb4</span><br><span class="line"><span class="keyword">collation</span>-<span class="keyword">server</span> = utf8mb4_bin</span><br><span class="line"><span class="keyword">default</span>-<span class="keyword">storage</span>-<span class="keyword">engine</span> = <span class="keyword">INNODB</span></span><br><span class="line">max_allowed_packet = <span class="number">256</span>M</span><br><span class="line">innodb_log_file_size = <span class="number">2</span>GB</span><br><span class="line"><span class="keyword">transaction</span>-<span class="keyword">isolation</span> = <span class="keyword">READ</span>-COMMITTED</span><br></pre></td></tr></table></figure>
+
+<p>重启 MySQL <code>systemctl restart mysql</code></p>
+<h4 id="Docker-部署-MySQL"><a href="#Docker-部署-MySQL" class="headerlink" title="Docker 部署 MySQL"></a>Docker 部署 MySQL</h4><ol>
+<li>拉取 MySQL 镜像 <code>docker pull mysql:5.7</code></li>
+<li>创建 MySQL 容器 <code>docker run -p 3306:3306 --name mysql -v /data/mysql:/var/lib/mysql/ -e MYSQL_ROOT_PASSWORD=&lt;password&gt; -d mysql:5.7</code></li>
+<li>进入容器修改配置 <code>docker exec -it mysql /bin/bash</code></li>
+<li>创建 confluence 库和用户并且授权<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> confluence <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_bin;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">'confluence'</span>@<span class="string">'%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'&lt;password&gt;'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> confluence.* <span class="keyword">TO</span> <span class="string">'confluence'</span>@<span class="string">'%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'&lt;password&gt;'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; flush <span class="keyword">privileges</span>;</span><br></pre></td></tr></table></figure></li>
+<li>修改 MySQL 配置文件<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">bind-address = 0.0.0.0 <span class="comment">#127.0.0.1</span></span><br><span class="line">character-<span class="keyword">set</span>-<span class="keyword">server</span> = utf8mb4</span><br><span class="line"><span class="keyword">collation</span>-<span class="keyword">server</span> = utf8mb4_bin</span><br><span class="line"><span class="keyword">default</span>-<span class="keyword">storage</span>-<span class="keyword">engine</span> = <span class="keyword">INNODB</span></span><br><span class="line">max_allowed_packet = <span class="number">256</span>M</span><br><span class="line">innodb_log_file_size = <span class="number">2</span>GB</span><br><span class="line"><span class="keyword">transaction</span>-<span class="keyword">isolation</span> = <span class="keyword">READ</span>-COMMITTED</span><br></pre></td></tr></table></figure></li>
+<li>重启 MySQL 容器 <code>docker restart mysql</code></li>
+</ol>
+<h3 id="部署新的-confluence"><a href="#部署新的-confluence" class="headerlink" title="部署新的 confluence"></a>部署新的 confluence</h3><ol>
+<li>将之前的 confluence 容器停止 <code>docker stop 8172e44b0b61</code></li>
+<li>创建新的 confluence 容器 <code>docker run -d -v /data/conflunece:/var/atlassian/confluence --name confluence -p 8090:8090 --user root:root cptactionhank/atlassian-confluence:latest</code></li>
+<li>选择使用非内置数据库</li>
+</ol>
+<div align="center">    
+    <img src="https://user-gold-cdn.xitu.io/2020/6/20/172cf145a3b81231?f=png&s=63589" width="603" height="328" />
+</div>
+
+<ol start="4">
+<li>配置数据库连接</li>
+</ol>
+<div align="center">    
+    <img src="https://user-gold-cdn.xitu.io/2020/6/20/172cf1a5de0831bc?f=png&s=71044" width="606" height="400" />
+</div>
+
+<h3 id="数据迁移"><a href="#数据迁移" class="headerlink" title="数据迁移"></a>数据迁移</h3><ol>
+<li>在<strong>加载内容</strong> 页选择 <strong>从备份还原</strong></li>
+</ol>
+<div align="center">    
+    <img src="https://user-gold-cdn.xitu.io/2020/6/20/172cf21da53ad4ec?f=png&s=88344" width="606" height="416" />
+</div>
+
+<ol start="2">
+<li>将之前站点备份文件导入 <code>cp /home/confluence/xmlexport-20200619-051237-3.zip /data/conflunece/restore/</code></li>
+</ol>
+<div align="center">    
+    <img src="https://user-gold-cdn.xitu.io/2020/6/20/172cf24a1e450e1d?f=png&s=40713" width="609" height="220" />
+</div>
+
+<ol start="3">
+<li>等待数据还原</li>
+</ol>
+<div align="center">    
+    <img src="https://user-gold-cdn.xitu.io/2020/6/20/172cf255a3a21f5b?f=png&s=35665" width="607" height="270" />
+</div>
+
+<ol start="4">
+<li>恢复完成</li>
+</ol>
+<div align="center">    
+    <img src="https://user-gold-cdn.xitu.io/2020/6/20/172cf2ceba712728?f=png&s=22243" width="606" height="203" />
+</div>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        <li>
+            <a target="_blank" href="https://twitter.com/ericsyh92">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-twitter"></i>
+                            </span>
+            </a>
+        </li>
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/ericsyh">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://www.linkedin.com/in/ericsyh">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-linkedin"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud" target="_blank" rel="noopener">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
