@@ -16,13 +16,17 @@
     </title>
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
     <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
     <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
     <!-- ga & ba script hoook -->
     <script></script>
-</head>
+<meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
 
@@ -89,7 +93,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作步骤"><span class="toc-text">操作步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#备份-confluence"><span class="toc-text">备份 confluence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-MySQL"><span class="toc-text">安装 MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Host-部署-MySQL"><span class="toc-text">Host 部署 MySQL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-部署-MySQL"><span class="toc-text">Docker 部署 MySQL</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#部署新的-confluence"><span class="toc-text">部署新的 confluence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据迁移"><span class="toc-text">数据迁移</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4"><span class="toc-text">操作步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD-confluence"><span class="toc-text">备份 confluence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-MySQL"><span class="toc-text">安装 MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Host-%E9%83%A8%E7%BD%B2-MySQL"><span class="toc-text">Host 部署 MySQL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker-%E9%83%A8%E7%BD%B2-MySQL"><span class="toc-text">Docker 部署 MySQL</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E6%96%B0%E7%9A%84-confluence"><span class="toc-text">部署新的 confluence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB"><span class="toc-text">数据迁移</span></a></li></ol></li></ol>
 </div>
     
 </div>
@@ -141,7 +145,7 @@
 </span>
     </div>
     <div class="post-content ">
-        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>之前按照 <a href="https://www.jianshu.com/p/8e81caca5f2a" target="_blank" rel="noopener">Docker安装Confluence</a> 部署了 confluence server。前期为了方便直接使用了 confluence 内嵌的 H2 数据库。后续小伙伴陆陆续续开始使用起来后，为了稳定还是按照官方要求使用外部数据库，并将现有的数据进行迁移。</p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>之前按照 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8e81caca5f2a">Docker安装Confluence</a> 部署了 confluence server。前期为了方便直接使用了 confluence 内嵌的 H2 数据库。后续小伙伴陆陆续续开始使用起来后，为了稳定还是按照官方要求使用外部数据库，并将现有的数据进行迁移。</p>
 <h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="备份-confluence"><a href="#备份-confluence" class="headerlink" title="备份 confluence"></a>备份 confluence</h3><ol>
 <li>使用管理员账号进入 <strong>站点管理</strong> -&gt; <strong>一般配置</strong> -&gt; <strong>备份与还原</strong>，对当前 confluence 进行备份操作</li>
 </ol>
@@ -160,7 +164,7 @@
 <li><p>进行 MySQL 的初始化 <code>sudo mysql_secure_installation</code></p>
 </li>
 <li><p>进入 MySQL 终端，创建 confluence 库和用户并且授权</p>
-<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> confluence <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_bin;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">'confluence'</span>@<span class="string">'%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'&lt;password&gt;'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> confluence.* <span class="keyword">TO</span> <span class="string">'confluence'</span>@<span class="string">'%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'&lt;password&gt;'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; flush <span class="keyword">privileges</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> confluence <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_bin;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;confluence&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;&lt;password&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> confluence.* <span class="keyword">TO</span> <span class="string">&#x27;confluence&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;&lt;password&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; flush <span class="keyword">privileges</span>; </span><br></pre></td></tr></table></figure>
 </li>
 <li><p>修改 MySQL 配置文件 </p>
 </li>
@@ -172,7 +176,7 @@
 <li>拉取 MySQL 镜像 <code>docker pull mysql:5.7</code></li>
 <li>创建 MySQL 容器 <code>docker run -p 3306:3306 --name mysql -v /data/mysql:/var/lib/mysql/ -e MYSQL_ROOT_PASSWORD=&lt;password&gt; -d mysql:5.7</code></li>
 <li>进入容器修改配置 <code>docker exec -it mysql /bin/bash</code></li>
-<li>创建 confluence 库和用户并且授权<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> confluence <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_bin;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">'confluence'</span>@<span class="string">'%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'&lt;password&gt;'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> confluence.* <span class="keyword">TO</span> <span class="string">'confluence'</span>@<span class="string">'%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'&lt;password&gt;'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; flush <span class="keyword">privileges</span>;</span><br></pre></td></tr></table></figure></li>
+<li>创建 confluence 库和用户并且授权<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> confluence <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_bin;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;confluence&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;&lt;password&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> confluence.* <span class="keyword">TO</span> <span class="string">&#x27;confluence&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;&lt;password&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; flush <span class="keyword">privileges</span>; </span><br></pre></td></tr></table></figure></li>
 <li>修改 MySQL 配置文件<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">bind-address = 0.0.0.0 <span class="comment">#127.0.0.1</span></span><br><span class="line">character-<span class="keyword">set</span>-<span class="keyword">server</span> = utf8mb4</span><br><span class="line"><span class="keyword">collation</span>-<span class="keyword">server</span> = utf8mb4_bin</span><br><span class="line"><span class="keyword">default</span>-<span class="keyword">storage</span>-<span class="keyword">engine</span> = <span class="keyword">INNODB</span></span><br><span class="line">max_allowed_packet = <span class="number">256</span>M</span><br><span class="line">innodb_log_file_size = <span class="number">2</span>GB</span><br><span class="line"><span class="keyword">transaction</span>-<span class="keyword">isolation</span> = <span class="keyword">READ</span>-COMMITTED</span><br></pre></td></tr></table></figure></li>
 <li>重启 MySQL 容器 <code>docker restart mysql</code></li>
 </ol>
@@ -282,7 +286,7 @@
         <span id="busuanzi_container_site_uv">
             <span id="busuanzi_value_site_uv"></span>UV
         </span>
-        Created By <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud" target="_blank" rel="noopener">AirCloud</a></p>
+        Created By <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>  Theme <a target="_blank" rel="noopener" href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
 </footer>
 
 
@@ -297,7 +301,9 @@
     window.isPost = true
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
 <script src="/js/index.js"></script>
+
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
