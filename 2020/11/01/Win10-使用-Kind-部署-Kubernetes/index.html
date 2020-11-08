@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="沈瑀昊的博客">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Win10 使用 Kind 部署 Kubernetes - ericsyh 的博客 | ericsyh&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Eric Shen</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4"><span class="toc-text">操作步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WSL2-%E5%AE%89%E8%A3%85"><span class="toc-text">WSL2 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker-desktop-%E5%AE%89%E8%A3%85"><span class="toc-text">Docker-desktop 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kind-%E5%AE%89%E8%A3%85"><span class="toc-text">Kind 安装</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Win10 使用 Kind 部署 Kubernetes
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2020-11-01 18:16:28</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#Kind" title="Kind">Kind</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Win10 的 WSL2 支撑了在 Linux 子系统中使用 Docker，尝试在 WSL2 环境下通过 <a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/kind">Kind</a> 来部署本地 Kubernetes 环境。</p>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="WSL2-安装"><a href="#WSL2-安装" class="headerlink" title="WSL2 安装"></a>WSL2 安装</h3><p>详细文档参考 <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Installation Instructions for WSL2</a></p>
+<ol>
+<li>在Windows程序中，选择启用 “适用于 Linux 的 Windows 子系统”</li>
+<li>管理员身份打开 PowerShell 并运行 <code>dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart</code></li>
+<li>管理员身份打开 PowerShell 并运行 <code>wsl --set-default-version 2</code></li>
+<li>打开 Microsoft Store，并选择自己偏好的 Linux 分发版</li>
+</ol>
+<h3 id="Docker-desktop-安装"><a href="#Docker-desktop-安装" class="headerlink" title="Docker-desktop 安装"></a>Docker-desktop 安装</h3><p>文档参考 <a target="_blank" rel="noopener" href="https://docs.docker.com/docker-for-windows/wsl/">docker-for-windows</a> 进行 Win10 Docker-desktop 安装</p>
+<h3 id="Kind-安装"><a href="#Kind-安装" class="headerlink" title="Kind 安装"></a>Kind 安装</h3><ol>
+<li>进入 Win10 的 Linux 子系统，在子系统内安装 Kind binary<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -Lo .<span class="regexp">/kind https:/</span><span class="regexp">/kind.sigs.k8s.io/</span>dl<span class="regexp">/v0.9.0/</span>kind-linux-amd64</span><br><span class="line">chmod +x ./kind</span><br><span class="line">mv .<span class="regexp">/kind /</span>some-dir-<span class="keyword">in</span>-your-PATH/kind</span><br></pre></td></tr></table></figure></li>
+<li>准备 Kind 所需的 kindest/node 镜像 <code>docker pull kindest/node:v1.19.1</code></li>
+<li>使用 Kind 命令创建本地 Kubernetes <code>kind create cluster</code><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Creating cluster <span class="string">&quot;kind&quot;</span> ...</span><br><span class="line"> ✓ Ensuring <span class="keyword">node</span> <span class="title">image</span> (kindest/<span class="keyword">node</span><span class="title">:v1</span>.<span class="number">19.1</span>) 🖼</span><br><span class="line"> ✓ Preparing nodes 📦</span><br><span class="line"> ✓ Writing configuration 📜</span><br><span class="line"> ✓ Starting control-plane 🕹️</span><br><span class="line"> ✓ Installing CNI 🔌</span><br><span class="line"> ✓ Installing StorageClass 💾</span><br><span class="line">Set kubectl context to <span class="string">&quot;kind-kind&quot;</span></span><br><span class="line">You can now use your cluster with:</span><br><span class="line"></span><br><span class="line">kubectl cluster<span class="literal">-inf</span>o --context kind-kind</span><br><span class="line"></span><br><span class="line">Thanks for using kind! 😊</span><br></pre></td></tr></table></figure></li>
+<li>使用 kubectl 部署 deployment <code>kubectl create deployment nginx --image=nginx</code><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NAME    READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">nginx   <span class="number">1</span>/<span class="number">1</span>     <span class="number">1</span>            <span class="number">0</span>           <span class="number">63</span>s</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        <li>
+            <a target="_blank" href="https://twitter.com/ericsyh92">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-twitter"></i>
+                            </span>
+            </a>
+        </li>
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/ericsyh">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://www.linkedin.com/in/ericsyh">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-linkedin"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>  Theme <a target="_blank" rel="noopener" href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
